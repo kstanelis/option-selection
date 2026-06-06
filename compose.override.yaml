@@ -1,0 +1,19 @@
+---
+services:
+  php:
+    volumes:
+      - .:/app:cached
+      - /app/vendor
+      - /app/public/build
+    environment:
+      SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+      STABILITY: ${STABILITY:-stable}
+    build:
+      context: .
+      target: frankenphp_dev
+
+###> doctrine/doctrine-bundle ###
+  database:
+    ports:
+      - "5432"
+###< doctrine/doctrine-bundle ###
