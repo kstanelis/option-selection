@@ -1,0 +1,14 @@
+api_platform:
+    title: Option Selection API
+    version: 1.0.0
+    formats:
+        json:
+            mime_types:
+                - application/json
+        jsonld:
+            mime_types:
+                - application/ld+json
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
