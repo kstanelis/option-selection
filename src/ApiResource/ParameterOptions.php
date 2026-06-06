@@ -34,6 +34,8 @@ use ApiPlatform\Metadata\QueryParameter;
 )]
 class ParameterOptions
 {
+    /** @param array<string> $parameter1
+        @param array<string> $parameter2 */
     public function __construct(
         public array $parameter1 = [],
         public array $parameter2 = [],
