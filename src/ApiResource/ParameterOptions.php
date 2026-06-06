@@ -14,20 +14,8 @@ use ApiPlatform\Metadata\QueryParameter;
             uriTemplate: '/parameter',
             provider: 'App\State\ParameterOptionsProvider',
             parameters: [
-                'parameter1' => new QueryParameter(
-                    schema: [
-                        'type' => 'string',
-                        'enum' => ['A', 'B', 'C'],
-                    ],
-                    required: false,
-                ),
-                'parameter2' => new QueryParameter(
-                    schema: [
-                        'type' => 'string',
-                        'enum' => ['X', 'Y', 'Z'],
-                    ],
-                    required: false,
-                ),
+                'parameter1' => new QueryParameter(required: false),
+                'parameter2' => new QueryParameter(required: false),
             ],
         ),
     ],

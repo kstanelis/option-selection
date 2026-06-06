@@ -26,15 +26,16 @@ class ParameterOptionsProvider implements ProviderInterface
             return new ParameterOptions();
         }
 
-        $selection = [];
-        $validNames = ['parameter1', 'parameter2'];
-        $validValues = [
-            'parameter1' => ['A', 'B', 'C'],
-            'parameter2' => ['X', 'Y', 'Z'],
-        ];
+        // The empty-selection result is the authority on which parameters and
+        // values exist, sourced through the Service layer (no direct repository
+        // access from the presentation layer).
+        $validValues = $this->resolver->availableOptions([]);
 
-        foreach ($validNames as $paramName) {
-            $value = $request->query->get($paramName);
+        $selection = [];
+        foreach ($request->query->all() as $paramName => $value) {
+            if (!\array_key_exists($paramName, $validValues)) {
+                throw new BadRequestHttpException(sprintf('Invalid parameter "%s"', $paramName));
+            }
             if ($value !== null) {
                 if (!\in_array($value, $validValues[$paramName], true)) {
                     throw new BadRequestHttpException(sprintf(
