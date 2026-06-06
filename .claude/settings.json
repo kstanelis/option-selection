@@ -1,0 +1,135 @@
+{
+  "enabledMcpjsonServers": [
+    "symfony-ai-mate",
+    "gitlab",
+    "codebase-memory-mcp"
+  ],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|mcp__phpstorm__create_new_file|mcp__phpstorm__replace_text_in_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-credentials.sh",
+            "statusMessage": "Scanning for hardcoded credentials"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|mcp__phpstorm__create_new_file|mcp__phpstorm__replace_text_in_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/static-analysis.sh",
+            "statusMessage": "Running static analysis (php -l, PHPStan, PHPCS)"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|mcp__phpstorm__create_new_file|mcp__phpstorm__replace_text_in_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/frontend-lint.sh",
+            "statusMessage": "Running frontend lint (eslint, stylelint, prettier)"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-session-reminder.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-session-reminder.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-session-reminder.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-session-reminder.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-task-tests.sh",
+            "timeout": 600,
+            "asyncRewake": true,
+            "rewakeSummary": "Post-task tests finished",
+            "statusMessage": "Running post-task tests (PHP + Playwright)"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/cbm-reindex.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Susikelk kojas ant stalo, vaibinu",
+      "Dirbu, gali švilpauti",
+      "Pasišvilpauk kol vaibinu"
+    ]
+  }
+}
