@@ -7,9 +7,10 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\ApiResource\ParameterOptions;
+use App\Service\ParameterCatalog;
 use App\Service\ParameterOptionResolverInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /** @implements ProviderInterface<ParameterOptions> */
 class ParameterOptionsProvider implements ProviderInterface
@@ -17,6 +18,7 @@ class ParameterOptionsProvider implements ProviderInterface
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly ParameterOptionResolverInterface $resolver,
+        private readonly ParameterCatalog $catalog,
     ) {
     }
 
@@ -28,17 +30,13 @@ class ParameterOptionsProvider implements ProviderInterface
         }
 
         $selection = [];
-        $validNames = ['parameter1', 'parameter2'];
-        $validValues = [
-            'parameter1' => ['A', 'B', 'C'],
-            'parameter2' => ['X', 'Y', 'Z'],
-        ];
+        $validValues = $this->catalog->validValues();
 
-        foreach ($validNames as $paramName) {
+        foreach ($validValues as $paramName => $allowedValues) {
             $value = $request->query->get($paramName);
             if ($value !== null) {
-                if (!\in_array($value, $validValues[$paramName], true)) {
-                    throw new BadRequestHttpException(sprintf(
+                if (!\in_array($value, $allowedValues, true)) {
+                    throw new UnprocessableEntityHttpException(sprintf(
                         'Invalid value "%s" for parameter "%s"',
                         $value,
                         $paramName,

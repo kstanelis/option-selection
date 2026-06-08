@@ -79,6 +79,6 @@ class SmokeTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(422);
         $content = json_decode($client->getResponse()->getContent(), true);
-        $this->assertStringContainsString('The value you selected is not a valid choice', $content['detail']);
+        $this->assertStringContainsString('Invalid value "Q" for parameter "parameter1"', $content['detail']);
     }
 }

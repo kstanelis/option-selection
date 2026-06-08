@@ -149,4 +149,24 @@ class ParameterApiTest extends WebTestCase
         $this->assertEquals(['A'], $data['parameter1']);
         $this->assertEquals(['X'], $data['parameter2']);
     }
+
+    public function testOpenApiEnumIsSourcedFromDatabase(): void
+    {
+        $client = static::createClient();
+        $this->setupTestData();
+        $client->request('GET', '/api/docs.jsonopenapi');
+
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+
+        $enums = [];
+        foreach ($data['paths']['/api/parameter']['get']['parameters'] as $parameter) {
+            if (\in_array($parameter['name'], ['parameter1', 'parameter2'], true)) {
+                $enums[$parameter['name']] = $parameter['schema']['enum'] ?? null;
+            }
+        }
+
+        $this->assertEquals(['A', 'B', 'C'], $enums['parameter1'] ?? null);
+        $this->assertEquals(['X', 'Y', 'Z'], $enums['parameter2'] ?? null);
+    }
 }
